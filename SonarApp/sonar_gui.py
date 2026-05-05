@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 import sonar
+import os
 
 
 class SonarApp:
@@ -13,6 +14,13 @@ class SonarApp:
 
         self.model = None
         self.image_path = None
+
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        keras_models = [f for f in os.listdir(app_dir) if f.endswith(".keras")]
+        if not keras_models:
+            keras_models = ["No models found"]
+
+        self.current_model_path = keras_models[0]
 
         title_font = ("Helvetica", 24, "bold")
         btn_font = ("Helvetica", 13, "bold")
@@ -26,6 +34,18 @@ class SonarApp:
         self.image_panel = tk.Label(self.img_frame, text="Select a fish image...", bg="#e9ecef", font=("Helvetica", 14),
                                     fg="#adb5bd")
         self.image_panel.pack(expand=True)
+
+        # Model selection frame
+        model_frame = tk.Frame(root, bg="#f8f9fa")
+        model_frame.pack(pady=10)
+
+        tk.Label(model_frame, text="Select Model:", font=("Helvetica", 12), bg="#f8f9fa").pack(side=tk.LEFT, padx=5)
+
+        self.model_var = tk.StringVar(value=self.current_model_path)
+        model_options = keras_models
+        self.model_dropdown = tk.OptionMenu(model_frame, self.model_var, *model_options, command=self.on_model_change)
+        self.model_dropdown.config(font=("Helvetica", 11), bg="white")
+        self.model_dropdown.pack(side=tk.LEFT, padx=5)
 
         btn_frame = tk.Frame(root, bg="#f8f9fa")
         btn_frame.pack(pady=20)
@@ -44,9 +64,21 @@ class SonarApp:
 
         self.root.after(100, self.setup_ai)
 
+    def on_model_change(self, value):
+        self.current_model_path = value
+        self.result_label.config(text="Loading new model...", fg="#f39c12")
+        self.root.update()
+        self.setup_ai()
+
     def setup_ai(self):
         try:
-            self.model = sonar.get_model()
+            if self.current_model_path == "No models found":
+                raise ValueError("Brak plików z modelami .keras w folderze aplikacji")
+
+            # używamy bezwzględnej ścieżki do modelu
+            app_dir = os.path.dirname(os.path.abspath(__file__))
+            full_model_path = os.path.join(app_dir, self.current_model_path)
+            self.model = sonar.get_model(full_model_path)
             self.result_label.config(text="System Ready! Cast your line.", fg="#2ecc71")
         except Exception as e:
             self.result_label.config(text=f"Error: {e}", fg="#e74c3c")

@@ -8,7 +8,7 @@ CLASS_NAMES = ['Ocean_Goldfish', 'Ocean_Harbor_seal', 'Ocean_Jellyfish', 'Ocean_
 MODEL_PATH = 'sonar_fish_model_ULTRA.keras'
 
 
-def get_model():
+def get_model(model_path=MODEL_PATH):
     """Buduje szkielet i ładuje wagi modelu."""
     print("Inicjalizacja silnika AI...")
 
@@ -32,11 +32,11 @@ def get_model():
 
     model.build((None, 224, 224, 3))
 
-    if os.path.exists(MODEL_PATH):
-        model.load_weights(MODEL_PATH)
+    if os.path.exists(model_path):
+        model.load_weights(model_path)
         return model
     else:
-        raise FileNotFoundError(f"Nie znaleziono pliku {MODEL_PATH}")
+        raise FileNotFoundError(f"Nie znaleziono pliku {model_path}")
 
 
 def predict_fish(model, img_path):

@@ -9,8 +9,8 @@ MODEL_PATH = 'sonar_fish_model_ULTRA.keras'
 
 
 def get_model(model_path=MODEL_PATH):
-    """Buduje szkielet i ładuje wagi modelu."""
-    print("Inicjalizacja silnika AI...")
+    """Builds the skeleton and loads model weights."""
+    print("Initializing AI engine...")
 
     data_augmentation = tf.keras.Sequential([
         tf.keras.layers.RandomFlip("horizontal_and_vertical"),
@@ -36,11 +36,11 @@ def get_model(model_path=MODEL_PATH):
         model.load_weights(model_path)
         return model
     else:
-        raise FileNotFoundError(f"Nie znaleziono pliku {model_path}")
+        raise FileNotFoundError(f"File not found: {model_path}")
 
 
 def predict_fish(model, img_path):
-    """Przyjmuje model i ścieżkę do zdjęcia, zwraca nazwę i pewność."""
+    """Takes the model and image path, returns the name and confidence."""
     img = keras_image.load_img(img_path, target_size=(224, 224))
     img_array = keras_image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
@@ -49,5 +49,12 @@ def predict_fish(model, img_path):
     idx = np.argmax(predictions[0])
     confidence = 100 * np.max(predictions[0])
 
-    label = CLASS_NAMES[idx] if idx < len(CLASS_NAMES) else f"Nieznany ({idx})"
+    label = CLASS_NAMES[idx] if idx < len(CLASS_NAMES) else f"Unknown ({idx})"
+
+    THRESHOLD = 33.0
+
+    if confidence < THRESHOLD:
+        label = "Not recognized (Object out of knowledge scope)"
+    # ---------------------------------
+
     return label, confidence

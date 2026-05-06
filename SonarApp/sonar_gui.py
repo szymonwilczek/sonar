@@ -73,9 +73,8 @@ class SonarApp:
     def setup_ai(self):
         try:
             if self.current_model_path == "No models found":
-                raise ValueError("Brak plików z modelami .keras w folderze aplikacji")
+                raise ValueError("No .keras model files found in the application folder")
 
-            # używamy bezwzględnej ścieżki do modelu
             app_dir = os.path.dirname(os.path.abspath(__file__))
             full_model_path = os.path.join(app_dir, self.current_model_path)
             self.model = sonar.get_model(full_model_path)
@@ -105,7 +104,10 @@ class SonarApp:
 
             fish, confidence = sonar.predict_fish(self.model, self.image_path)
 
-            self.result_label.config(text=f"Fish: {fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
+            if "Not recognized" in fish:
+                self.result_label.config(text=f"{fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
+            else:
+                self.result_label.config(text=f"Fish: {fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
 
 
 if __name__ == "__main__":

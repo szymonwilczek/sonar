@@ -7,15 +7,15 @@ import os
 import random
 
 def search_images_safe(term, max_images=100):
-    print(f"Szukam: {term}...")
-    for attempt in range(5): 
+    print(f"Searching for: {term}...")
+    for attempt in range(5):
         try:
             with DDGS() as ddgs:
                 results = list(ddgs.images(keywords=term, max_results=max_images))
                 return [r['image'] for r in results]
         except Exception as e:
             wait_time = 15 + (attempt * 10) # 15s, 25s, 35s...
-            print(f"  -> DDG blokuje IP domowe. Czekam {wait_time} sekund... (Próba {attempt+1}/5)")
+            print(f"  -> DDG is blocking home IP. Waiting {wait_time} seconds... (Attempt {attempt+1}/5)")
             time.sleep(wait_time)
     return []
 
@@ -74,26 +74,26 @@ gatunki_pl_total = {
 path = Path('MASTER_DATASET')
 path.mkdir(exist_ok=True)
 
-print("--- URUCHAMIAM SONAR SCRAPER (Wersja Stealth - 100 zdjęć) ---")
+print("--- RUNNING SONAR SCRAPER (Stealth version - 100 images) ---")
 for nazwa_folderu, haslo_wyszukiwania in gatunki_pl_total.items():
     dest = path / nazwa_folderu
     dest.mkdir(exist_ok=True, parents=True)
     
     if len(list(dest.glob('*.jpg'))) + len(list(dest.glob('*.png'))) > 85:
-        print(f"[POMINIĘTO] {nazwa_folderu} - mamy już wystarczająco zdjęć.")
+        print(f"[SKIPPED] {nazwa_folderu} - already enough images.")
         continue
 
     urls = search_images_safe(haslo_wyszukiwania, max_images=100)
     
     if urls:
-        print(f"[POBIERANIE] {nazwa_folderu}: znaleziono {len(urls)} linków.")
+        print(f"[DOWNLOADING] {nazwa_folderu}: found {len(urls)} links.")
         download_images(dest, urls=urls)
     
     oddech = random.uniform(6, 12)
     time.sleep(oddech)
 
-print("\n--- ZAKOŃCZONO POBIERANIE ---")
-print("Skanowanie i usuwanie uszkodzonych plików (to chwilę potrwa)...")
+print("\n--- DOWNLOAD FINISHED ---")
+print("Scanning and deleting broken files (this will take a moment)...")
 failed = verify_images(get_image_files(path))
 failed.map(Path.unlink)
-print(f"Usunięto {len(failed)} uszkodzonych plików. Twój MASTER_DATASET jest czysty!")
+print(f"Deleted {len(failed)} broken files. Your MASTER_DATASET is clean!")

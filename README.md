@@ -72,4 +72,4 @@ Sonar Pro is an artificial intelligence-based application designed to identify v
 
 ## Documentation
 
-For a detailed breakdown of the system architecture, Kaggle training workflow, and component interactions, please refer to the [DOCUMENTATION.md](DOCUMENTATION.md).
+For a detailed breakdown of the system architecture, Kaggle training workflow, and component interactions, please refer to the [DOCUMENTATION.md](SonarApp/DOCUMENTATION.md).

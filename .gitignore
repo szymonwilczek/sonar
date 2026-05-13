@@ -1,3 +1,8 @@
 .idea/
 
 SonarApp/__pycache__/
+venv/bin
+venv/lib/python3.12/site-packages/PIL/__pycache__
+venv/lib/python3.12/site-packages/PIL
+venv/lib/python3.12/site-packages/__pycache__
+venv/lib/python3.12/site-packages

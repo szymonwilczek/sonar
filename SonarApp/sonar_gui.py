@@ -10,7 +10,7 @@ class SonarApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Sonar Pro - AI Fish Recognition")
-        self.root.geometry("800x800")
+        self.root.geometry("1280x720")
         self.root.configure(bg="#f8f9fa")
 
         self.model = None
@@ -27,18 +27,20 @@ class SonarApp:
         btn_font = ("Helvetica", 13, "bold")
         result_font = ("Helvetica", 16, "bold")
 
-        tk.Label(root, text="Fishing Sonar AI", font=title_font, bg="#f8f9fa", fg="#2c3e50").pack(pady=25)
+        tk.Label(root, text="Fishing Sonar AI", font=title_font, bg="#f8f9fa", fg="#2c3e50").pack(side=tk.TOP, pady=15)
+
+        bottom_frame = tk.Frame(root, bg="#f8f9fa")
+        bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
 
         self.img_frame = tk.Frame(root, bg="#e9ecef", bd=0, highlightbackground="#dee2e6", highlightthickness=2)
-        self.img_frame.pack(pady=10, padx=30, fill=tk.BOTH, expand=True)
+        self.img_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=30, pady=10)
 
         self.image_panel = tk.Label(self.img_frame, text="Select a fish image...", bg="#e9ecef", font=("Helvetica", 14),
                                     fg="#adb5bd")
         self.image_panel.pack(expand=True)
 
-        # Model selection frame
-        model_frame = tk.Frame(root, bg="#f8f9fa")
-        model_frame.pack(pady=10)
+        model_frame = tk.Frame(bottom_frame, bg="#f8f9fa")
+        model_frame.pack(pady=5)
 
         tk.Label(model_frame, text="Select Model:", font=("Helvetica", 12), bg="#f8f9fa").pack(side=tk.LEFT, padx=5)
 
@@ -50,8 +52,8 @@ class SonarApp:
 
         self.descriptions = descriptions_loader.get_descriptions_dict()
 
-        btn_frame = tk.Frame(root, bg="#f8f9fa")
-        btn_frame.pack(pady=20)
+        btn_frame = tk.Frame(bottom_frame, bg="#f8f9fa")
+        btn_frame.pack(pady=10)
 
         tk.Button(btn_frame, text="Load Image", font=btn_font, bg="#3498db", fg="white",
                   activebackground="#2980b9", activeforeground="white", relief=tk.FLAT,
@@ -62,11 +64,11 @@ class SonarApp:
                                      width=15, cursor="hand2", state=tk.DISABLED, command=self.perform_analysis)
         self.btn_analyze.grid(row=0, column=1, padx=10)
 
-        self.result_label = tk.Label(root, text="Waiting for AI model...", font=result_font, bg="#f8f9fa", fg="#95a5a6")
-        self.result_label.pack(pady=20)
+        self.result_label = tk.Label(bottom_frame, text="Waiting for AI model...", font=result_font, bg="#f8f9fa", fg="#95a5a6")
+        self.result_label.pack(pady=5)
 
-        self.desc_label = tk.Label(root, text="", font=("Helvetica", 12), bg="#f8f9fa", fg="#34495e", wraplength=700)
-        self.desc_label.pack(pady=10)
+        self.desc_label = tk.Label(bottom_frame, text="", font=("Helvetica", 12), bg="#f8f9fa", fg="#34495e", wraplength=1000)
+        self.desc_label.pack(pady=5)
 
         self.root.after(100, self.setup_ai)
 
@@ -94,7 +96,7 @@ class SonarApp:
             self.image_path = path
             img = Image.open(path)
 
-            img.thumbnail((700, 550), Image.Resampling.LANCZOS)
+            img.thumbnail((800, 420), Image.Resampling.LANCZOS)
 
             img_tk = ImageTk.PhotoImage(img)
             self.image_panel.config(image=img_tk, text="")

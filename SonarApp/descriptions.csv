@@ -1,0 +1,97 @@
+Class_Name,Common_Name,Description,Habitat,Average_Size
+Ocean_Goldfish,Goldfish (Marine context),"Small, usually bright orange or yellowish fish often kept in aquariums or ponds.","Freshwater, sometimes found in coastal marine ponds.",15-30 cm
+Ocean_Harbor_seal,Harbor Seal,"Pinniped with a rounded head and spotted coat, found along coastal waters.",Coastal waters of the Northern Hemisphere.,1.5-1.9 m
+Ocean_Jellyfish,Jellyfish,Gelatinous sea creatures with umbrella-shaped bells and trailing tentacles.,Oceanic and coastal waters worldwide.,Varies (5 cm to 2 m)
+Ocean_Lobster,Lobster,Large marine crustaceans with muscular tails and claws.,"Rocky, sandy, or muddy ocean bottoms.",25-50 cm
+Ocean_Oyster,Oyster,"Saltwater bivalve mollusks with irregular, hard shells.","Beds in shallow, salty or brackish waters.",5-20 cm
+Ocean_Sea_turtle,Sea Turtle,Marine reptiles with streamlined shells and flippers.,Tropical and subtropical ocean waters.,60-120 cm
+Ocean_Squid,Squid,"Cephalopods with elongated bodies, large eyes, and eight arms.",Open ocean and deep sea waters.,30-60 cm (variable)
+Ocean_Starfish,Starfish,Star-shaped echinoderms with central discs and radiating arms.,Benthic ocean floors from shallows to depths.,12-24 cm
+PL_Amur_Bialy,Grass Carp,Large herbivorous freshwater fish with an elongated body.,Large rivers and lakes with vegetation.,60-100 cm
+PL_Belona,Garfish,"Long, slender fish with needle-like jaws and green bones.",Coastal marine waters and the Baltic Sea.,50-75 cm
+PL_Bolen,Asp,Fast predatory fish of the carp family with a large mouth.,Flowing rivers and large reservoirs.,50-80 cm
+PL_Brzana,Common Barbel,"Slender fish with four barbels on its snout, living in fast-flowing water.","Clear, fast-flowing rivers with gravel bottoms.",30-70 cm
+PL_Certa,Vimba Bream,"Silver fish with a distinctive curved nose, migrates for spawning.",Rivers flowing into the Baltic Sea.,25-45 cm
+PL_Ciernik,Three-spined Stickleback,Small fish with sharp spines on its back and sides.,"Rivers, lakes, and coastal marine waters.",5-8 cm
+PL_Dorsz,Atlantic Cod,Commercially important marine fish with a barbel under the chin.,"Deep, cold waters of the North Atlantic and Baltic.",40-100 cm
+PL_Fladra_Stornia,European Flounder,"Flatfish with eyes usually on the right side, found in coastal areas.","Coastal waters, estuaries, and the Baltic Sea.",25-40 cm
+PL_Gladzica,European Plaice,Flatfish with smooth brown skin and bright orange spots.,Sandy or muddy ocean floors.,30-50 cm
+PL_Glowacica,Huchen (Danube Salmon),"Large predatory salmonid with a long, cylindrical body.","Clean, cold rivers (mainly the Danube basin).",70-110 cm
+PL_Jaz,Ide (Orfe),Silver-colored freshwater fish with reddish fins.,"Rivers, lakes, and ponds.",30-50 cm
+PL_Jazgarz,Ruffe,"Small, aggressive freshwater fish with spiny fins.",Lakes and slow-moving rivers.,10-15 cm
+PL_Jelec,Common Dace,"Small, slender silver fish found in clean running water.",Fast rivers and streams.,15-25 cm
+PL_Karas_Pospolity,Crucian Carp,"Hardy, golden-brown fish that can survive in low oxygen conditions.","Stagnant waters, ponds, and shallow lakes.",20-35 cm
+PL_Karas_Srebrzysty,Prussian Carp,"Silver-colored relative of the crucian carp, highly invasive.",Slow rivers and ponds.,20-40 cm
+PL_Karp,Common Carp,"Large, robust freshwater fish widely farmed for food.","Warm, slow-moving rivers and lakes.",40-80 cm
+PL_Kielb,Gudgeon,Small bottom-dwelling fish with two barbels at the corners of its mouth.,Clean rivers and streams with sandy bottoms.,10-15 cm
+PL_Kielb_Krotkopletwy,Shortfin Gudgeon,Rare relative of the gudgeon found in specific river systems.,"Clean, flowing waters.",8-12 cm
+PL_Klen,Chub,Robust predatory fish with a broad head and large scales.,Rivers and streams of all sizes.,30-50 cm
+PL_Krap,White Bream,Small relative of the common bream with larger eyes and reddish fins.,Lakes and slow rivers.,20-30 cm
+PL_Kur_Diabel,Shorthorn Sculpin,Heavily built marine fish with a large spiny head.,Rocky bottoms in the Baltic Sea.,15-30 cm
+PL_Leszcz,Common Bream,"Deep-bodied, silver fish that turns bronze with age.",Slow rivers and nutrient-rich lakes.,30-60 cm
+PL_Lin,Tench,"Sturdy fish with very small scales, thick skin, and olive-green color.","Shallow, weedy ponds and lakes.",25-45 cm
+PL_Lipien,European Grayling,"Elegant fish with a very large, colorful dorsal fin.","Clean, cold, fast-flowing rivers.",30-45 cm
+PL_Losos_Atlantycki,Atlantic Salmon,Migratory fish famous for its long journey to spawn in rivers.,North Atlantic ocean and clean rivers.,60-120 cm
+PL_Mietus,Burbot,"The only freshwater cod-like fish, active in winter.","Cold, deep lakes and rivers.",30-60 cm
+PL_Okon,European Perch,Predatory fish with vertical dark stripes and red lower fins.,Almost all types of freshwater and brackish water.,20-40 cm
+PL_Piekielnica,Schneider (Spirlin),Small fish with a double row of black dots along its side.,"Clean, fast-flowing streams.",10-13 cm
+PL_Ploc,Common Roach,Very common silver fish with bright red eyes and fins.,Almost any freshwater habitat.,15-30 cm
+PL_Pstrag_Potokowy,Brown Trout,Prized game fish with red and black spots on its sides.,"Cold, oxygen-rich mountain streams and rivers.",30-50 cm
+PL_Pstrag_Tecczowy,Rainbow Trout,Introduced species with a pinkish stripe along its side.,Rivers and commercial fishing ponds.,30-60 cm
+PL_Pstrag_Zrodlany,Brook Trout,Beautifully colored trout with marbled patterns on its back.,"Cold, clear springs and small streams.",20-40 cm
+PL_Rozpior,Blue Bream,Slender relative of the common bream with a long anal fin.,Large rivers and reservoirs.,25-40 cm
+PL_Sandacz,Zander (Pike-perch),Highly prized predatory fish with sharp teeth and glassy eyes.,"Large, turbid rivers and lakes.",40-80 cm
+PL_Sieja,Common Whitefish,"Silvery fish of the salmon family found in deep, clean lakes.","Deep, cold alpine and lowland lakes.",30-55 cm
+PL_Sielawa,Vendace,"Small, delicate relative of the whitefish, found in deep lakes.","Deep, clean, cold lakes.",15-25 cm
+PL_Sledz_Baltycki,Baltic Herring,"Small, silver oily fish, a subspecies of the Atlantic herring.",Open waters of the Baltic Sea.,15-25 cm
+PL_Sum_Europejski,Wels Catfish,Enormous predatory fish with a long body and long barbels.,"Large, warm rivers and lakes.",100-250 cm
+PL_Sumik_Karlowaty,Brown Bullhead,Small invasive catfish from North America with sharp spines.,"Warm, stagnant, or slow-moving waters.",20-30 cm
+PL_Swinka,Common Nase,"Fish with a hard, straight lip used for scraping algae from rocks.",Fast-flowing rivers with rocky bottoms.,25-45 cm
+PL_Szczupak,Northern Pike,"Ambush predator with a long, torpedo-shaped body and sharp teeth.","Lakes, rivers, and brackish coastal waters.",50-100 cm
+PL_Szprot,European Sprat,"Small, silver marine fish used extensively in the food industry.",Coastal waters and the Baltic Sea.,10-15 cm
+PL_Tolpyga_Biala,Silver Carp,Large fish known for jumping out of the water when disturbed.,Large rivers and aquaculture ponds.,60-100 cm
+PL_Tolpyga_Pstara,Bighead Carp,Large freshwater fish with a massive head and low-set eyes.,Large rivers and reservoirs.,60-110 cm
+PL_Troc_Wedrowna,Sea Trout,Migratory form of the trout that lives in the sea and spawns in rivers.,Baltic Sea and coastal rivers.,50-80 cm
+PL_Turbot,Turbot,"Large, circular flatfish prized for its firm white flesh.",Sandy or gravelly sea floors.,40-70 cm
+PL_Ukleja,Common Bleak,"Small, slim silver fish that swims in large schools near the surface.",Rivers and lakes.,12-18 cm
+PL_Wegorz_Europejski,European Eel,Snake-like migratory fish that spawns in the Sargasso Sea.,"Rivers, lakes, and coastal waters.",60-100 cm
+PL_Wzdrega,Common Rudd,"Golden-colored fish often confused with the roach, has red fins.",Weedy lakes and slow rivers.,20-35 cm
+Shark_basking,Basking Shark,"Huge filter-feeder, the second largest living fish.",Temperate oceans worldwide.,6-8 m
+Shark_blacktip,Blacktip Shark,"Fast, athletic shark with black tips on its fins.",Tropical and subtropical coastal waters.,1.5-2 m
+Shark_blue,Blue Shark,"Slender, deep-blue shark known for long-distance migrations.",Deep temperate and tropical ocean waters.,2-3 m
+Shark_bull,Bull Shark,Aggressive shark known for swimming in both salt and fresh water.,Coastal waters and large rivers.,2-3.4 m
+Shark_hammerhead,Hammerhead Shark,Shark with a unique T-shaped head called a cephalofoil.,Tropical and warm temperate coastal waters.,3-6 m
+Shark_lemon,Lemon Shark,Yellowish-brown shark often found in shallow subtropical waters.,"Coastal shelves, mangroves, and coral reefs.",2.4-3 m
+Shark_mako,Shortfin Mako Shark,"The fastest shark in the world, capable of high-speed bursts.",Offshore temperate and tropical waters.,2.5-3.5 m
+Shark_nurse,Nurse Shark,Bottom-dwelling shark with a broad head and barbels.,Tropical and subtropical coastal waters.,2-3 m
+Shark_sand_tiger,Sand Tiger Shark,Large-headed shark with jagged teeth visible even when mouth is closed.,Coastal waters and reefs.,2-3 m
+Shark_thresher,Thresher Shark,"Recognizable by its extremely long, scythe-like tail fin.",Open ocean in temperate and tropical regions.,3-5 m
+Shark_tiger,Tiger Shark,Large predator with dark stripes that fade as it matures.,Tropical and temperate waters worldwide.,3.2-4.5 m
+Shark_whale,Whale Shark,"The largest fish in the sea, a gentle filter-feeder.",Tropical and warm temperate oceans.,10-12 m
+Shark_white,Great White Shark,The worlds largest known predatory fish.,Coastal and offshore temperate waters.,4-6 m
+Shark_whitetip,Whitetip Reef Shark,Slender shark with white tips on its dorsal and tail fins.,Coral reefs in the Indo-Pacific.,1.2-1.6 m
+Turbo_Bighead_carp,Bighead Carp,Large freshwater fish with an exceptionally large head.,Large rivers and aquaculture.,60-110 cm
+Turbo_Blackchin_Tilapia,Blackchin Tilapia,Small tilapia species with a distinctive black chin.,Brackish and fresh waters of West Africa.,15-25 cm
+Turbo_Carp,Common Carp (Turbo variant),Standard common carp found in many freshwater habitats.,"Lakes, rivers, and farms.",40-80 cm
+Turbo_Catfish,Walking Catfish / Airbreathing Catfish,"Catfish capable of ""walking"" on land using its fins.",Freshwater swamps and ponds.,30-50 cm
+Turbo_Climbing_Perch,Climbing Perch,Small fish capable of surviving out of water for long periods.,Fresh and brackish waters in Asia.,15-25 cm
+Turbo_Freshwater_Eel,Freshwater Eel,Elongated fish found in Asian river systems.,Freshwater rivers and estuaries.,40-90 cm
+Turbo_Goby,Goby,Small bottom-dwelling fish with fused pelvic fins forming a sucker.,"Fresh, brackish, and marine waters.",5-15 cm
+Turbo_Gold_Fish,Goldfish,Common ornamental fish from the carp family.,Domesticated in ponds and tanks.,15-30 cm
+Turbo_Gourami,Gourami,Labyrinth fish known for their thread-like pelvic fins.,Freshwater habitats in Asia.,10-60 cm
+Turbo_Indian_Carp,Rohu (Indian Carp),Important freshwater food fish in South Asia.,Rivers and aquaculture in India.,40-90 cm
+Turbo_Indo-pacific_Tarpon,Indo-pacific Tarpon,"Large, silver predatory fish capable of breathing air.",Coastal waters and estuaries.,50-100 cm
+Turbo_Jaguar_Guapote,Jaguar Cichlid,Predatory cichlid with dark spots resembling a jaguar.,Freshwater lakes and rivers.,25-40 cm
+Turbo_Janitor_Fish,Janitor Fish (Plecostomus),Armored catfish often used to clean algae in aquariums.,Freshwater rivers and tanks.,20-50 cm
+Turbo_Knife_Fish,Clown Knifefish,"Fish with a long, continuous anal fin and spots on its body.",Large rivers and lakes in SE Asia.,50-90 cm
+Turbo_Manila_Catfish,Kanduli Catfish,Silvery catfish common in the Philippines.,Fresh and brackish waters.,20-40 cm
+Turbo_Milkfish,Milkfish (Bangus),Important food fish in SE Asia with a symmetrical tail.,Marine and brackish tropical waters.,50-100 cm
+Turbo_Mosquito_Fish,Mosquitofish,Small fish introduced globally to control mosquito populations.,"Shallow, stagnant waters.",4-7 cm
+Turbo_Mudfish,Snakehead (Mudfish),Aggressive predator that can survive in low oxygen.,"Rivers, lakes, and swamps.",30-80 cm
+Turbo_Mullet,Grey Mullet,Silver fish that often jumps out of the water.,Coastal marine and brackish waters.,30-60 cm
+Turbo_Scat_Fish,Spotted Scat,"Small, flat, spotted fish popular in the aquarium trade.",Estuaries and coastal waters.,15-25 cm
+Turbo_Silver_Barb,Silver Barb,Shiny silver freshwater fish common in Asian aquaculture.,Rivers and ponds.,20-35 cm
+Turbo_Silver_Carp,Silver Carp,Filter-feeding carp that jumps when startled.,Large rivers.,60-100 cm
+Turbo_Silver_Perch,Silver Perch,Freshwater fish from Australia with silver-grey scales.,Slow rivers and dams.,25-40 cm
+Turbo_Tenpounder,Tenpounder (Ladyfish),"Slender, silvery fish known for its fighting ability.",Coastal tropical waters.,40-70 cm
+Turbo_Tilapia,Nile Tilapia,Highly adaptable and widely farmed freshwater fish.,"Lakes, rivers, and farms.",20-40 cm

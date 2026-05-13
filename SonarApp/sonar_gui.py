@@ -3,6 +3,7 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 import sonar
 import os
+import descriptions_loader
 
 
 class SonarApp:
@@ -47,6 +48,8 @@ class SonarApp:
         self.model_dropdown.config(font=("Helvetica", 11), bg="white")
         self.model_dropdown.pack(side=tk.LEFT, padx=5)
 
+        self.descriptions = descriptions_loader.get_descriptions_dict()
+
         btn_frame = tk.Frame(root, bg="#f8f9fa")
         btn_frame.pack(pady=20)
 
@@ -61,6 +64,9 @@ class SonarApp:
 
         self.result_label = tk.Label(root, text="Waiting for AI model...", font=result_font, bg="#f8f9fa", fg="#95a5a6")
         self.result_label.pack(pady=20)
+
+        self.desc_label = tk.Label(root, text="", font=("Helvetica", 12), bg="#f8f9fa", fg="#34495e", wraplength=700)
+        self.desc_label.pack(pady=10)
 
         self.root.after(100, self.setup_ai)
 
@@ -100,14 +106,18 @@ class SonarApp:
     def perform_analysis(self):
         if self.model and self.image_path:
             self.result_label.config(text="Analyzing scales and fins...", fg="#f39c12")
+            self.desc_label.config(text="")
             self.root.update()
 
             fish, confidence = sonar.predict_fish(self.model, self.image_path)
 
-            if "Not recognized" in fish:
-                self.result_label.config(text=f"{fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
-            else:
+            if "Not recognized" not in fish:
                 self.result_label.config(text=f"Fish: {fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
+                desc = self.descriptions.get(fish, "No description available for this species.")
+                self.desc_label.config(text=desc)
+            else:
+                self.result_label.config(text=f"{fish}\nConfidence: {confidence:.2f}%", fg="#e74c3c")
+                self.desc_label.config(text="")
 
 
 if __name__ == "__main__":

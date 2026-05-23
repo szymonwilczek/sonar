@@ -14,6 +14,8 @@
 \usepackage{cite}
 \usepackage{microtype}
 
+\graphicspath{{../SonarApp/examples/}}
+
 \lstset{
     frame=single,
     language=Python,
@@ -40,7 +42,7 @@
     citecolor=blue,
 }
 
-\title{\textbf{A Hybrid Deep Learning Pipeline for Multi-Class Fish Species Identification via Compound-Scaled CNNs and Out-of-Scope Filtering}}
+\title{\textbf{Local Fish Species Recognition with EfficientNetB0 and Confidence-Based Rejection}}
 
 \author{
     \begin{tabular}{cc}
@@ -58,11 +60,11 @@
 \maketitle
 
 \begin{abstract}
-This paper presents Sonar Shark, a local-cloud hybrid machine learning pipeline for multi-class fish species identification across many classes, focusing on regional freshwater species in Poland alongside exotic marine fauna. The dataset was compiled using a multi-lingual semantic web scraper coupled with header validation to remove corrupted imagery. Convolutional neural network training was conducted on remote GPU infrastructure utilizing the EfficientNetB0 architecture with sequential real-time image augmentation layers. To address the misclassification of out-of-domain objects, an inference-side post-processing activation filter with an empirical softmax confidence threshold ($\tau = 33.0\%$) was introduced. The classification model is deployed via a desktop user interface with localized dynamic model instantiation. Experimental results show a validation accuracy exceeding 93.0\%, demonstrating generalization under non-uniform illumination and background occlusions.
+This paper describes \textit{Sonar Shark}, a course project for image-based fish species recognition. The system classifies 96 categories, including Polish freshwater and Baltic species, sharks, selected marine animals, and additional commercial or non-native freshwater species. Training data was collected with a Python image scraper using multilingual search queries and then cleaned with automated image validation. The classifier uses EfficientNetB0 with Keras augmentation layers and a small custom classification head. The trained model is used locally in a Tkinter desktop application, which can load \texttt{.keras} model files from the application directory and display species descriptions from a CSV file. The final local inference code also applies a simple confidence threshold of $\tau = 35.0\%$ to reject low-confidence inputs. This threshold is useful for some non-target images, but it is not a full open-set recognition method and can still produce false positives near the decision boundary.
 \end{abstract}
 
 \vspace{0.5cm}
-\noindent\textbf{Keywords:} Deep Learning, Computer Vision, EfficientNetB0, Image Classification, Automated Web Scraping, Out-of-Scope Filtering, Ichthyology.
+\noindent\textbf{Keywords:} Computer Vision, EfficientNetB0, Image Classification, Web Scraping, Confidence Thresholding, Fish Recognition.
 
 \vfill
 \newpage
@@ -70,68 +72,69 @@ This paper presents Sonar Shark, a local-cloud hybrid machine learning pipeline 
 \section{Introduction}
 \label{sec:introduction}
 
-Automated ichthyological classification models provide critical utility in environmental monitoring, commercial fisheries management, and recreational catch tracking. Traditional species identification protocols rely on manual inspection of morphological traits by domain experts. This methodology is unscalable, prone to subjective error, and impractical for real-time field applications.
+Fish species recognition from photographs can support education, recreational fishing tools, and simple field documentation. In practice, identification is still usually performed manually from visible morphological traits, such as body shape, fin position, scale pattern, coloration, and the presence or absence of barbels. This is reliable when done by an expert, but it is slower and less accessible for casual users.
 
-While deep learning architectures, specifically Convolutional Neural Networks (CNNs), have improved image classification tasks, deploying these models in natural aquatic and riverine ecosystems presents distinct computer vision challenges. Images captured by anglers exhibit severe environmental noise, such as sub-aquatic light attenuation, turbidity, varying refraction indexes, and spatial occlusions introduced by aquatic vegetation or human hands. Furthermore, classification performance is limited by high inter-class visual similarity among closely related species - such as members of the cyprinid family like Roach and Rudd - and high intra-class variation caused by seasonal coloration shifts, developmental growth stages, and sexual dimorphism.
+Convolutional neural networks are well suited to this type of image classification task, but the dataset is naturally difficult. Fish photographs often contain cluttered backgrounds, hands, nets, reflections, low resolution, motion blur, and inconsistent lighting. Several species are also visually similar. For example, roach and rudd are both cyprinids with similar body profiles and red fins, so small details such as eye color and fin alignment can matter.
 
-To mitigate these issues, this paper details \textit{Sonar Shark}, a classification pipeline designed for multi-class fish identification developed within the course of Biologically Inspired Artificial Intelligence (BIAI). Aimed at deployment within a mobile application for regional anglers, the system processes a taxonomy of local freshwater and Baltic species indigenous to Poland (e.g., \textit{Esox lucius}, \textit{Perca fluviatilis}, \textit{Cyprinus carpio}), alongside exotic marine fauna, shark lineages, and global aquaculture species, resulting in a 96-class model dataset.
+This project implements \textit{Sonar Shark}, a 96-class classifier developed for the Biologically Inspired Artificial Intelligence (BIAI) course. The class list includes local Polish freshwater and Baltic species, such as \textit{Esox lucius}, \textit{Perca fluviatilis}, and \textit{Cyprinus carpio}, as well as sharks, selected marine animals, and additional globally common aquaculture or freshwater species.
 
 The primary engineering contributions of this project are:
 \begin{enumerate}
-    \item \textbf{Decoupled Data and Training Workflow:} An operational pipeline that isolates local, multi-lingual semantic web scraping and file-header validation from cloud-accelerated network optimization conducted on remote GPU instances (Kaggle/Colab).
-    \item \textbf{Optimized Feature Extraction Backbone:} Implementation of the compound-scaled EfficientNetB0 architecture combined with an inline, sequential augmentation graph to enable high-accuracy classification under localized edge-device inference constraints.
-    \item \textbf{Out-of-Scope Anomaly Mitigation:} An inference-side post-processing filter utilizing an empirical softmax confidence threshold ($\tau = 33.0\%$) to detect and reject non-target inputs, significantly reducing false-positive classifications during open-world deployment.
+    \item \textbf{Data collection and cleaning:} A local Python scraper downloads image candidates from search results and removes unreadable files with \texttt{fastai.vision.utils.verify\_images}.
+    \item \textbf{Model architecture:} The classifier uses EfficientNetB0 without the original ImageNet classification top, followed by global average pooling, dropout, and a 96-unit Softmax output layer.
+    \item \textbf{Local application:} A Tkinter GUI loads images, selects a local \texttt{.keras} model file, runs inference, and displays the predicted class with a matching species description when available.
+    \item \textbf{Confidence-based rejection:} A post-processing threshold rejects predictions whose highest Softmax score is below 35.0\%. This reduces some invalid outputs, while still leaving known edge cases.
 \end{enumerate}
 
-The remainder of this paper is organized as follows: Section~\ref{sec:data_acquisition} details the data acquisition pipeline, engine transition, and dataset taxonomy. Section~\ref{sec:architecture} covers the network architecture, augmentation layers, and cloud training configuration. Section~\ref{sec:inference} formalizes the localized client runtime and the mathematical logic of the anomaly filter. Section~\ref{sec:results} evaluates quantitative convergence metrics and taxonomic edge cases. Finally, Section~\ref{sec:conclusion} outlines conclusions and mobile scaling trajectories.
+The remainder of this paper is organized as follows. Section~\ref{sec:data_acquisition} describes data collection and dataset taxonomy. Section~\ref{sec:architecture} covers the model structure and training workflow. Section~\ref{sec:inference} describes the local inference code and confidence threshold. Section~\ref{sec:results} discusses observed results and limitations. Section~\ref{sec:conclusion} summarizes the project and future work.
 
 \section{Automated Data Acquisition and Preprocessing}
 \label{sec:data_acquisition}
 
-Classification performance depends directly on the quality, volume, and taxonomic consistency of the training data. Because public ichthyological datasets lack sufficient representation of regional Polish freshwater fish captured in real-world angling scenarios, a custom image collection pipeline was engineered.
+Classification quality depends strongly on the images used for training. Since ready-made datasets for Polish freshwater species are limited, the project uses a custom image collection script and a manually organized directory structure.
 
 \subsection{Multi-Lingual Querying Logic}
-Data collection was initiated via a Python script (\texttt{scraper.py}) designed to download image files from web search indices. To minimize out-of-domain noise, such as commercial logos, culinary photography, or fishing equipment, a structured multi-lingual querying strategy was applied.
+Data collection is handled by \texttt{scraper.py}. The script defines a dictionary of Polish species names and search phrases, creates a destination folder for each species, queries an image search API, downloads the returned image URLs, and validates the downloaded files.
 
-Each species key within the source dictionary (\texttt{gatunki\_pl\_total}) was mapped to a compound query string containing the colloquial Polish name, the Latin binomial nomenclature, and English environmental keywords. For example:
+Each species key in \texttt{gatunki\_pl\_total} is mapped to a query string that usually combines a Polish common name, a Latin or English species name, and sometimes an environmental keyword. For example:
 \begin{itemize}
     \item \textit{Northern Pike:} \texttt{"szczupak ryba esox lucius underwater"}
     \item \textit{Common Carp:} \texttt{"karp ryba cyprinus carpio underwater"}
     \item \textit{European Perch:} \texttt{"okoń europejski perch underwater"}
 \end{itemize}
-Including Latin terms and the \texttt{"underwater"} keyword forced the search algorithms to prioritize in-situ biological photography and sub-aquatic documentation over commercial retail listings.
+This does not guarantee clean data, but it improves the chance of retrieving biological photographs instead of unrelated images such as prepared food, fishing gear, or diagrams.
 
-\subsection{Search Index Transition and Rate-Limiting Mitigation}
-The initial implementation deployed the DuckDuckGo Search (DDGS) API. However, continuous batch execution triggered host-side rate-limiting and IP address blocking, despite enforcing randomized delays between 6 and 12 seconds per species iteration. To establish a stable data pipeline, the retrieval logic was updated to interface with the Bing search index via modified query ingestion parameters. The Bing infrastructure allowed continuous programmatic requests without network-level blocking, ensuring consistent image link extraction across all target classes.
+\subsection{Search API and Rate-Limiting}
+The current repository implementation uses the \texttt{DDGS} image search interface. Because image search providers may rate-limit repeated automated requests, the script retries failed searches and waits between attempts. It also sleeps for a random interval between 6 and 12 seconds after each species. This makes the scraper slower, but reduces the number of failed requests during long runs.
 
 \subsection{Automated Stream Validation and Cleaning}
-Programmatic image harvesting introduces truncated file payloads, network dropouts, and invalid data formats. To automate directory cleaning, a validation layer from the \texttt{fastai.vision.utils} library was integrated into the script.
+Automated image downloading often produces truncated files, unsupported formats, empty files, or HTML error pages saved with image extensions. The script therefore validates the downloaded files before the dataset is used for training.
 
-The \texttt{verify\_images()} function parsed the file headers and byte streams of every downloaded asset. Files presenting structural corruption, unreadable metadata headers, or a 0~KB size footprint from dropped socket connections were permanently deleted via automated unlinking (\texttt{Path.unlink}). This automated filtering phase eliminated approximately 3,000 corrupted files, preventing runtime decoding exceptions during subsequent mini-batch tensor instantiation stages.
+The \texttt{verify\_images()} function from \texttt{fastai.vision.utils} scans the downloaded images and returns files that cannot be decoded. These files are then removed with \texttt{Path.unlink}. This step is important because corrupted images would otherwise fail later during image loading or batch creation.
 
 \subsection{Dataset Taxonomy and Manual Verification}
-The validated images were sorted into a hierarchical folder directory named \texttt{MASTER\_DATASET}, where each sub-folder corresponds to one of the 96 distinct target classes. The taxonomy is divided into four main operational domains:
+The validated images are stored in a folder named \texttt{MASTER\_DATASET}, with one subfolder per class during dataset preparation. The final local model contains 96 output classes listed in \texttt{SonarApp/sonar.py}. The class prefixes divide the model scope into four groups:
 \begin{enumerate}
-    \item \textbf{\texttt{PL\_} (Polish Native Species):} 48 classes representing indigenous freshwater and Baltic Sea fish (e.g., Zander, Ide, Tench, Wels Catfish, Common Roach).
+    \item \textbf{\texttt{PL\_} (Polish and Baltic species):} 49 classes representing freshwater and Baltic Sea fish (e.g., Zander, Ide, Tench, Wels Catfish, Common Roach).
     \item \textbf{\texttt{Shark\_}:} 14 classes containing globally monitored shark lineages (e.g., Great White, Tiger, Hammerhead, Mako).
     \item \textbf{\texttt{Ocean\_}:} 8 categories encompassing marine fauna (e.g., Sea Turtle, Jellyfish, Lobster, Squid).
-    \item \textbf{\texttt{Turbo\_}:} 26 commercial, aquacultural, and non-indigenous freshwater fish species (e.g., Nile Tilapia, Bighead Carp, Walking Catfish).
+    \item \textbf{\texttt{Turbo\_}:} 25 commercial, aquaculture, and non-indigenous freshwater fish species (e.g., Tilapia, Bighead Carp, Walking Catfish).
 \end{enumerate}
 
-Because semantic search queries can still retrieve out-of-context images, such as textbook diagrams, conceptual line art, or divers, a final layer of manual verification was performed. Every scraped image was visually audited. This step eliminated the remaining out-of-domain files, ensuring that the training input space consisted exclusively of authentic photographic representations of the target species.
+Search queries can still return wrong images, including diagrams, prepared meals, logos, or photographs of other species. For that reason, the automatic cleaning step should be treated only as technical validation. Taxonomic correctness still required manual inspection of the folders before training.
 
 \section{Model Architecture and Hybrid Training Workflow}
 \label{sec:architecture}
 
-Classification over a 96-class output space requires an architecture that balances feature representation with computational efficiency. This section details the network topology, the computational data augmentation layers, and the distributed hybrid infrastructure used to train the final model.
+The model has to distinguish 96 classes, so the architecture needs enough capacity for visual features while remaining practical to load on a normal laptop. The implemented model uses EfficientNetB0 as the convolutional backbone and a small classification head.
 
 \subsection{Convolutional Neural Network Selection}
-The \textit{EfficientNetB0} architecture was selected as the feature extraction backbone. EfficientNet scales network depth ($d$), width ($w$), and input resolution ($r$) uniformly using a fixed compound coefficient, optimizing parameter efficiency relative to standard convolutional layers~\cite{efficientnet}. 
+The \textit{EfficientNetB0} architecture was selected as the feature extraction backbone. EfficientNet scales network depth ($d$), width ($w$), and input resolution ($r$) using a compound coefficient, which provides a good accuracy-to-parameter-count trade-off compared with many manually scaled CNNs~\cite{efficientnet}.
 
-By using Mobile Inverted Bottleneck Convolutions (MBConv) as core building blocks - which implement depthwise separable convolutions and squeeze-and-excitation optimization - EfficientNetB0 minimizes the total float-point operations (FLOPs) and compressed parameter size. This architecture supports real-time edge inference within a localized mobile application environment.
+EfficientNetB0 is also a reasonable choice for a student project because it is available directly in \texttt{tf.keras.applications}, has a known input size of $224 \times 224$, and can be reconstructed reliably before loading saved weights. In the local repository, this reconstruction happens in \texttt{SonarApp/sonar.py}.
 
 \subsection{Augmentation and Classification Head Design}
-To handle varying visual inputs, an end-to-end sequential tensor pipeline was constructed using the \texttt{tf.keras.Sequential} API. Real-time data augmentation layers were integrated directly into the training graph of the model to avoid static offline dataset inflation. The preprocessing stack is configured as:
+The model starts with a small Keras augmentation block:
 \begin{lstlisting}
 data_augmentation = tf.keras.Sequential([
     layers.RandomFlip("horizontal_and_vertical"),
@@ -139,48 +142,46 @@ data_augmentation = tf.keras.Sequential([
     layers.RandomZoom(0.15)
 ])
 \end{lstlisting}
-During training, each mini-batch tensor undergoes horizontal and vertical reflections, random angular rotations within $\pm15\%$, and isotropic scaling variations up to $\pm15\%$. This continuous geometric variation prevents the network from over-fitting to static environmental backgrounds and forces the extraction of invariant morphological fish features.
+During training, this block randomly flips, rotates, and zooms the input images. The goal is not to make the classifier invariant to every possible condition, but to reduce dependence on a single pose, crop, or background pattern.
 
-The classification top of the baseline EfficientNetB0 network was truncated (\texttt{include\_top=False}). A custom classification head was appended with the following layers:
+The original EfficientNetB0 classification top is removed with \texttt{include\_top=False}. The project then adds:
 \begin{enumerate}
-    \item \textbf{Global Average Pooling 2D:} Reduces the spatial dimensions ($H \times W$) of the final convolutional feature maps into a single 1D feature vector, minimizing the output parameter count compared to fully connected flattening layers.
-    \item \textbf{Dropout Layer ($\mathbf{0.3}$):} Implements a 30\% regularization rate, randomly deactivating units during training forward passes to prevent co-adaptation of features.
-    \item \textbf{Dense Output Layer:} A fully connected layer mapping the intermediate features to 96 units corresponding to the target taxonomy, utilizing a \textit{Softmax} activation function to yield a valid multinomial probability distribution over the classes.
+    \item \textbf{Global Average Pooling 2D:} Converts the final feature maps into a single vector without introducing a large fully connected layer.
+    \item \textbf{Dropout Layer ($\mathbf{0.3}$):} Applies 30\% dropout during training as regularization.
+    \item \textbf{Dense Output Layer:} Maps the features to 96 class scores and applies \textit{Softmax}.
 \end{enumerate}
 
-During training in the cloud, the network parameters were fine-tuned using weights pre-trained on the \textit{ImageNet} dataset. However, the local deployment script (\texttt{sonar.py}) initializes the network with \texttt{weights=None}. This configuration ensures that the client runtime reconstructs the structural tensor graph before loading the custom learned weights from the compiled \texttt{.keras} model file.
+The local script initializes EfficientNetB0 with \texttt{weights=None}, builds the same layer structure, and then loads the trained weights from a \texttt{.keras} file. In the current repository, the GUI discovers \texttt{sonar\_shark.keras} automatically because it scans the \texttt{SonarApp} directory for files ending with \texttt{.keras}.
 
 \subsection{Distributed Training Protocol}
-The machine learning development lifecycle deployed a decoupled hybrid execution model. Local workstations managed web scraping, file-header validation, and client-side inference deployment. The computationally intensive backpropagation and optimization phase was offloaded to cloud GPU infrastructure (Kaggle and Google Colab).
+The project separates data preparation and inference from model training. The repository contains the local scraper, the local GUI, the inference wrapper, the description loader, and the exported model file. The heavy training run was performed on cloud GPU infrastructure with Kaggle.
 
-The production model - designated as the \textit{Shark} variant - was trained for approximately 200 epochs over a 24-hour cloud compute window. Network optimization was driven by the \textit{Adam} (Adaptive Moment Estimation) algorithm with a mini-batch size of 32.
-
-To maintain monotonic convergence and prevent the loss function from stalling in local minima, a \texttt{ReduceLROnPlateau} callback controller was integrated. This module monitored validation loss and automatically decayed the learning rate by a discrete factor upon detecting a performance plateau. This training configuration stabilized gradient variance, resulting in a smooth loss convergence and reliable generalization across the validation sets and the local GUI interface without tracking anomalies.
+The reported final model, the \textit{Shark} variant, was trained for about 200 epochs with a mini-batch size of 32. The training setup used the Adam optimizer~\cite{adam}. The exported weights are loaded locally for inference rather than retrained inside the desktop application. \texttt{ReduceLROnPlateau} was also used to lower the learning rate when validation loss stopped improving.
 
 \section{Local Inference Engine and Anomaly Filtering}
 \label{sec:inference}
 
-To deploy the trained weight states, a local inference subsystem was implemented within the \texttt{SonarApp} directory. This architecture separates the user interface execution from the underlying tensor evaluation graphs, allowing local processing on consumer hardware.
+The trained model is used locally from the \texttt{SonarApp} directory. The desktop application loads an image, resizes it to the model input size, runs Keras inference, and displays the result.
 
 \subsection{Software Architecture and Dynamic Weight Discovery}
-The client-side subsystem consists of three functional layers: \texttt{sonar\_gui.py} (graphical orchestration), \texttt{sonar.py} (core inference model), and \texttt{descriptions\_loader.py} (metadata flat-file parsing). 
+The client-side code consists of three main files: \texttt{sonar\_gui.py} for the GUI, \texttt{sonar.py} for model construction and prediction, and \texttt{descriptions\_loader.py} for reading species descriptions from \texttt{descriptions.csv}.
 
-The presentation layer is built using the Python \texttt{tkinter} library, using PIL (\textit{Pillow}) with a \texttt{LANCZOS} resampling filter to render input images within the application layout while maintaining aspect ratios. Asynchronous file execution prevents window locking during user interactions, securing a stable UI loop.
+The presentation layer is built with \texttt{tkinter}. It uses Pillow to open selected image files and \texttt{Image.Resampling.LANCZOS} to resize them for display while preserving the aspect ratio. In the current implementation, analysis is triggered from the GUI event handler and runs in the main Tkinter thread.
 
-The local system implements a decoupled dynamic model discovery mechanism. During initialization, the interface scans the local directory path for serialized weights files containing the \texttt{.keras} extension. It automatically populates a dropdown menu, enabling runtime switching between different model versions (such as legacy iterations and the final production model, \textit{Sonar Shark}) without requiring interface layout modifications.
+During initialization, the GUI scans its own directory for files with the \texttt{.keras} extension and fills a dropdown menu with the results. This allows different exported model files to be selected without changing the interface code.
 
 \subsection{Mathematical Formulation of Out-of-Scope (OOS) Filtering}
-Standard Softmax layers output a relative multinomial probability distribution where the sum of the vector components equals unity. Consequently, convolutional neural network classifiers cannot inherently flag out-of-domain inputs, which often results in false-positive classifications when presented with images that do not contain target fish species.
+The Softmax output always assigns probability mass across the known classes. A standard closed-set classifier therefore still returns a best class for images outside the training scope, such as landscapes, household objects, or unrelated animals.
 
-To reject these out-of-domain anomalies, an inference-side filtering layer was added to the post-processing execution loop. Let $\mathbf{x}$ represent an input image tensor mapped to a spatial dimension of $224 \times 224 \times 3$. The feedforward inference pass maps this tensor to a raw logit vector $\mathbf{z} \in \mathbb{R}^{K}$, where $K = 96$ denotes the total number of trained taxonomic classes. The classification probability vector $\hat{\mathbf{y}}$ is derived using the standard Softmax function:
+To reduce this behavior, \texttt{sonar.py} applies a simple threshold to the maximum Softmax score. Let $\mathbf{x}$ be an input image resized to $224 \times 224 \times 3$. The model maps it to class probabilities $\hat{\mathbf{y}} \in \mathbb{R}^{K}$, where $K = 96$:
 \begin{equation}
     \hat{y}_i = \sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} \quad \text{for } i = 1, \dots, K
 \end{equation}
-The baseline class selection index is governed by the argmax operator:
+The predicted class index is selected with:
 \begin{equation}
     c^* = \arg\max_{i} (\hat{y}_i)
 \end{equation}
-To enforce anomaly rejection, an empirical confidence decision boundary $\tau = 33.0\%$ is introduced. The final conditional prediction assignment $L(\mathbf{x})$ is defined mathematically as:
+The local code uses a threshold $\tau = 35.0\%$. The returned label is:
 \begin{equation}
     L(\mathbf{x}) = 
     \begin{cases} 
@@ -189,85 +190,81 @@ To enforce anomaly rejection, an empirical confidence decision boundary $\tau = 
     \end{cases}
 \end{equation}
 
-Empirical verification of this mechanism was made using non-ichthyological image baselines to evaluate edge-cases. An example of this boundary tracking is illustrated in Figure~\ref{fig:oos_cat}, where a control sample featuring a plant pot in cat shape (\texttt{doniczka-kot.jpg}) was loaded into the user interface. Under these out-of-domain conditions, the network’s internal spatial activations spread evenly across multiple target nodes, preventing any singular class from dominating the activation space. As a direct result, the maximum probability collapsed significantly below the $\tau = 33.0\%$ threshold, successfully triggering the out-of-scope rejection flag, whereas target fish imagery consistently scored higher confidence values, validating the selectivity of the filter.
+This should be interpreted as a heuristic, not as a mathematically complete out-of-distribution detector. In a local check with the exported model, the landscape image \texttt{lowquai.jpg} was rejected with a maximum confidence of 12.50\%. The non-fish image \texttt{doniczka-kot.jpg} reached 33.63\% confidence for \texttt{PL\_Kielb}; with the 35.0\% threshold it is also rejected. This shows why the threshold was set conservatively above this observed borderline case, while still not guaranteeing correct rejection for every out-of-scope image.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{doniczka-kot.jpg}
-    \caption{Localized frontend rendering an out-of-scope rejection state. When presented with a non-ichthyological control image (\texttt{doniczka-kot.jpg}), the Softmax vector collapses below $\tau=33.0\%$, correctly outputting the anomaly flag.}
-    \label{fig:oos_cat}
+    \includegraphics[width=0.45\textwidth]{lowquai.jpg}
+    \caption{Example non-target image from the local examples directory. The exported model rejected this image because its top Softmax confidence was below $\tau=35.0\%$.}
+    \label{fig:oos_landscape}
 \end{figure}
 
 \subsection{Contextual Knowledge Retrieval Layer}
-When an image yields an in-scope classification ($\ge \tau$), the pipeline calls \texttt{descriptions\_loader.py} to append ecological metadata. This layer uses the \texttt{pandas} engine to parse a local relational database (\texttt{descriptions.csv}).
+When an image yields an in-scope classification ($\ge \tau$), the GUI looks up the returned class name in a dictionary produced by \texttt{descriptions\_loader.py}. This module uses \texttt{pandas} to read the local file \texttt{descriptions.csv}.
 
-The underlying records were compiled by extracting data from digital encyclopedias and ichthyological repositories. Parser dynamically builds an associative dictionary array mapping the model's internal class tokens to structured strings:
+The loader builds a Python dictionary from model class tokens to display text:
 \begin{lstlisting}
 # Formatted metadata concatenation returned to the GUI
-return f"Name: {row['Common_Name']}\nHabitat: {row['Habitat']}\nSize: {row['Average_Size']}\nDescription: {row['Description']}"
+full_text = f"Name: {common_name}\nDescription: {desc}\nHabitat: {habitat}\nAverage Size: {size}"
 \end{lstlisting}
-This contextual retrieval layer maps the raw visual classification index to verified ecological statistics, returning species dimensions, natural habitats, and descriptive data directly to the user interface.
+This step does not influence the model prediction. It only adds readable species information to the GUI when a class name is found in the CSV file.
 
 \section{Experimental Results and Discussion}
 \label{sec:results}
 
-This section evaluates the classification metrics, optimization convergence, and behavioral boundaries exhibited by the trained model variant, designated as \textit{Sonar Shark}. It also details the operational trade-offs introduced by the out-of-scope anomaly filtering layer.
+This section summarizes the reported validation result and the behavior observed in local inference examples. The emphasis is on practical limitations rather than claiming that the classifier is robust in all field conditions.
 
 \subsection{Quantitative Classification Evaluation}
-Following the 200-epoch training process on cloud GPU nodes, the optimization trajectory stabilized. On the validation dataset, the model achieved a classification accuracy exceeding \textbf{93.0\%} across the target categories. Given the 96-class output space and the background noise variations present in the custom web-scraped data directory, this performance validates the scaling efficiency of the EfficientNetB0 backbone and the programmatic data-cleaning pipeline.
+The final training run reached validation accuracy above \textbf{93.0\%} after approximately 200 epochs. This is a strong result for a 96-class classifier trained from a custom web-scraped dataset, but it should be interpreted together with the dataset construction process. If near-duplicate images, uneven class sizes, or search-engine bias remain in the dataset, validation accuracy can overestimate performance on new photographs.
 
-The initial training phase (up to epoch 50) showed a sharp decline in categorical cross-entropy loss, representing fast gradient optimization. Beyond this threshold, the optimization gradient plateaued. 
-
-Integrating the \texttt{ReduceLROnPlateau} controller decayed the learning rate parameter when validation loss stagnation was detected. Between epochs 150 and 200, the validation error asymptoted, reaching convergence stability without tracking loss divergence or geometric oscillations that indicate over-fitting.
+Local smoke tests with the exported \texttt{sonar\_shark.keras} file show that the model loads correctly and produces plausible predictions for several example images: \texttt{PL\_Ploc} for \texttt{ploc.jpg}, \texttt{PL\_Karp} for \texttt{karp.jpg}, \texttt{PL\_Klen} for \texttt{klen.jpg}, \texttt{Shark\_hammerhead} for \texttt{rekin-mlot.jpg}, and \texttt{Ocean\_Sea\_turtle} for \texttt{turtle.jpg}.
 
 \subsection{Qualitative Analysis of Morphological Edge Cases}
-A granular analysis of misclassifications reveals specific taxonomic limitations caused by biological commonalities within the 96-class space. The model's spatial activation maps encountered maximum ambiguity within two family clusters:
+A realistic source of errors is similarity between related species. Two groups are especially important in this dataset:
 \begin{itemize}
-    \item \textbf{The Cyprinid Duality (\textit{Rutilus rutilus} vs. \textit{Scardinius erythrophthalmus}):} The model encountered persistent inter-class confusion when separating the Common Roach (\texttt{PL\_Ploc}) from the Common Rudd (\texttt{PL\_Wzdrega}). These species share near-identical body profiles, scale structures, and red fin pigmentations. The core taxonomic differentiators are eye color (red vs. yellow-gold) and the dorsal fin alignment relative to the pelvic fins. These fine spatial patterns are frequently obscured by underwater refraction or suboptimal camera angles.
-    \item \textbf{The Carp Morphology Cluster:} Ambiguity was logged between the Common Carp (\texttt{PL\_Karp} / \texttt{Turbo\_Carp}) and large freshwater relatives, such as the Grass Carp (\texttt{PL\_Amur\_Bialy}) or dark phenotypes of the Crucian Carp (\texttt{PL\_Karas\_Pospolity}). While the Common Carp is characterized by sensory barbels and thick scale patterns, low-resolution inputs caused the network to misinterpret these features, occasionally misclassifying samples as the cylindrical, barbel-less profile of the Grass Carp.
+    \item \textbf{Roach and rudd:} \texttt{PL\_Ploc} and \texttt{PL\_Wzdrega} have similar body shape and fin coloration. Distinguishing them often depends on details such as eye color and fin position, which may be unclear in low-quality images.
+    \item \textbf{Carp-like species:} \texttt{PL\_Karp}, \texttt{Turbo\_Carp}, \texttt{PL\_Amur\_Bialy}, and \texttt{PL\_Karas\_Pospolity} are visually close enough that poor crops or low resolution can hide important features such as barbels or scale pattern.
 \end{itemize}
 
 \subsection{Confidence Thresholding Trade-offs and UI Profiles}
-Enforcing the post-processing decision boundary $\tau = 33.0\%$ establishes an engineering trade-off between classification precision and system recall. Field testing verified that this threshold filters out-of-domain input anomalies. 
+The threshold $\tau = 35.0\%$ creates a simple precision-recall trade-off. Raising the threshold rejects more uncertain predictions, but it can also reject valid fish photographs. Lowering it accepts more fish images, but increases the risk of false positives on unrelated inputs.
 
-However, this boundary reduces system sensitivity under low-quality lighting conditions. When processing occluded, out-of-focus, or underexposed images of authentic target species, the output Softmax probability distribution disperses across multiple nodes. Because the peak activation falls below $\tau = 33.0\%$, the system triggers the "Not recognized (Object out of knowledge scope)" rejection state.
+The local example set illustrates both sides of this behavior. A clear fish image such as \texttt{ploc.jpg} is classified with high confidence, while the landscape image \texttt{lowquai.jpg} is rejected. The borderline non-fish image \texttt{doniczka-kot.jpg}, which previously scored 33.63\%, is also rejected after raising the threshold to 35.0\%. This makes the filter more conservative, but it should still not be described as a reliable open-world anomaly detector.
 
-From a software engineering perspective, a conservative rejection behavior is preferable to generating false-positive classifications in a deployment environment. Misidentifying an invalid object or assigning a wrong species label under low confidence degrades user trust and can misinform anglers regarding local catch regulations. 
+From a software engineering perspective, the safer user experience is to avoid presenting low-confidence predictions as facts. In the current GUI, rejected inputs are displayed as \texttt{Not recognized (Object out of knowledge scope)} together with the confidence value.
 
-To document this operational behavior, two distinct field execution profiles are tracked:
+Two local examples are shown below:
 \begin{itemize}
-    \item \textbf{Successful In-Scope Inference:} Figure~\ref{fig:fish_success} illustrates nominal execution. A well-illuminated photographic target allows the EfficientNetB0 core to generate a peak confidence score above the threshold, mapping the classification index to the structured description fields in the database layer.
-    \item \textbf{False-Negative Rejection:} Figure~\ref{fig:fish_fail} showcases a threshold rejection case. An authentic fish image captured under heavy shadows or motion blur causes the peak activation to drop below $\tau = 33.0\%$, forcing the application to default to the out-of-scope state rather than outputting a low-confidence guess.
+    \item \textbf{Accepted fish example:} Figure~\ref{fig:fish_success} shows \texttt{ploc.jpg}, which the local model predicted as \texttt{PL\_Ploc} with 85.60\% confidence.
+    \item \textbf{Rejected non-fish example:} Figure~\ref{fig:oos_landscape} shows \texttt{lowquai.jpg}, which was rejected with 12.50\% confidence.
 \end{itemize}
-
-To manage this input friction, the runtime system handles threshold rejections through an automated graphical error dialogue box. This component informs the user of the low-confidence state and requests an image re-capture loop, securing higher-quality tensor inputs and stabilizing classification performance.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{fish_success.jpg}
-    \caption{The baseline operating state of Sonar Shark. A distinct target image allows the model to surpass the confidence threshold, displaying both the taxonomic label and the formatted educational profile.}
+    \includegraphics[width=0.65\textwidth]{ploc.jpg}
+    \caption{Accepted in-scope example from the local examples directory. The exported model predicted \texttt{PL\_Ploc} with 85.60\% confidence.}
     \label{fig:fish_success}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{fish_fail.jpg}
-    \caption{An edge-case operational state where an authentic fish specimen fails to trigger identification due to low-confidence output stemming from severe background noise or underexposure.}
-    \label{fig:fish_fail}
+    \includegraphics[width=0.45\textwidth]{doniczka-kot.jpg}
+    \caption{Borderline non-fish example. The model's strongest class for this image was \texttt{PL\_Kielb} with 33.63\% confidence, so the 35.0\% threshold rejects it.}
+    \label{fig:borderline_rejection}
 \end{figure}
 
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-This paper detailed the design and deployment of \textit{Sonar Shark}, a localized pipeline for multi-class fish species classification across a 96-class taxonomy. Developed as part of coursework in Biologically Inspired Artificial Intelligence (BIAI), the system maps regional Polish freshwater fish alongside diverse marine fauna.
+This paper described \textit{Sonar Shark}, a local fish and marine-species image classifier built as a BIAI coursework project. The current implementation includes a scraper, a 96-class EfficientNetB0-based classifier, a Tkinter GUI, dynamic \texttt{.keras} model loading, CSV-based species descriptions, and a confidence threshold for low-confidence predictions.
 
-The project demonstrates that high-accuracy deep learning applications can be implemented under hardware and budget constraints. By deploying a hybrid workload execution model, the system decoupled local web scraping and file-header data cleansing from the backpropagation optimization phase, which was offloaded to cloud GPU infrastructure (Kaggle/Colab). This protocol generated a validation classification accuracy exceeding \textbf{93.0\%}, verifying the performance of the EfficientNetB0 backbone when coupled with inline sequential augmentation graphs.
+The project shows that a usable image classification prototype can be built with standard Python tools and cloud training. The validation accuracy above \textbf{93.0\%} is promising, but the deployed behavior still depends on dataset quality, class balance, image conditions, and the limits of closed-set Softmax classification.
 
-Deployment assessments confirm that standard Softmax-based image classifiers require explicit post-processing modifications to handle open-world domain shifts. Enforcing an inference-side confidence threshold of $\tau = 33.0\%$ enabled the system to detect and isolate non-target, out-of-domain input imagery. This threshold constraint prevents arbitrary classifications on invalid objects, prioritizing prediction precision. Low-confidence states are caught at the interface level and managed through a graphical dialogue box that prompts an immediate image re-capture loop to stabilize the input stream.
+The confidence threshold is a practical addition, but it should be presented honestly: it rejects some non-target images and fails on others. For a production application, a stronger solution would require better calibration, a separate unknown-class strategy, or an explicit out-of-distribution detection method.
 
-Future development focuses on expanding this pipeline into a mobile application for recreational anglers. To enable offline execution in remote environments lacking cellular network connectivity, the compiled \texttt{.keras} weights will be converted into compressed edge tensor formats, specifically \textit{TensorFlow Lite (TFLite)} and \textit{ONNX} runtimes. This modification will allow local inference to run directly on smartphone Neural Processing Units (NPUs).
+Future work should first improve evaluation: fixed train/validation/test splits, per-class precision and recall, a confusion matrix, and a separate test set of non-fish images would make the results easier to trust. The GUI could also move inference to a worker thread so that large models do not block the interface.
 
-Additionally, while the current architecture operates as an image classification task due to the close-up profile of the gathered dataset, future iterations will evaluate multi-stage models. We aim to integrate a lightweight object detection model, such as the YOLO architecture, as an auxiliary pre-processing component. This component will extract bounding boxes around the target specimens, automatically cropping background noise or hand occlusions before routing the optimized region of interest into the core EfficientNet evaluation engine.
+For deployment on phones, the \texttt{.keras} model could be converted to TensorFlow Lite or another mobile-friendly format. A later version could also add an object detector, such as YOLO~\cite{yolo}, before classification, so that the classifier receives a crop around the fish instead of the whole photograph.
 
 \begin{thebibliography}{99}
 

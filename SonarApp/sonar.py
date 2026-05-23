@@ -51,7 +51,7 @@ def predict_fish(model, img_path):
 
     label = CLASS_NAMES[idx] if idx < len(CLASS_NAMES) else f"Unknown ({idx})"
 
-    THRESHOLD = 33.0
+    THRESHOLD = 35.0
 
     if confidence < THRESHOLD:
         label = "Not recognized (Object out of knowledge scope)"
